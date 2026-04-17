@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>終極密碼 Guess the Number</title>
+    <style>
+        /* 基礎樣式與響應式設計 */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f2f5;
+        }
+
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 90%;
+            max-width: 400px; /* 電腦版限制寬度 */
+        }
+
+        h1 { color: #1a73e8; margin-bottom: 10px; }
+        
+        .range-display {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #d93025;
+            margin: 20px 0;
+        }
+
+        input[type="number"] {
+            width: 80%;
+            padding: 12px;
+            font-size: 1rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input:focus { border-color: #1a73e8; }
+
+        button {
+            margin-top: 15px;
+            padding: 12px 25px;
+            font-size: 1rem;
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 80%;
+        }
+
+        button:hover { background-color: #1557b0; }
+
+        .message { margin-top: 20px; color: #5f6368; }
+
+        /* 響應式微調：針對極小螢幕 */
+        @media (max-width: 350px) {
+            .range-display { font-size: 1.2rem; }
+            h1 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>終極密碼</h1>
+    <p>請猜一個數字</p>
+    
+    <div class="range-display" id="rangeText">0 ~ 100</div>
+    
+    <input type="number" id="guessInput" placeholder="輸入數字..." min="0" max="100">
+    <br>
+    <button onclick="checkGuess()">送出</button>
+    <button onclick="resetGame()" style="background-color: #70757a; margin-top: 10px;">重新開始</button>
+
+    <div class="message" id="message">準備好開始了嗎？</div>
+</div>
+
+<script>
+    // 遊戲邏輯 JS
+    let min = 0;
+    let max = 100;
+    let answer = Math.floor(Math.random() * 101);
+
+    const rangeText = document.getElementById('rangeText');
+    const guessInput = document.getElementById('guessInput');
+    const message = document.getElementById('message');
+
+    function checkGuess() {
+        const userGuess = parseInt(guessInput.value);
+
+        // 防呆機制
+        if (isNaN(userGuess) || userGuess <= min || userGuess >= max) {
+            alert(`請輸入介於 ${min} 到 ${max} 之間的有效數字！`);
+            guessInput.value = '';
+            return;
+        }
+
+        if (userGuess === answer) {
+            message.innerHTML = `<strong style="color:green;">恭喜答對！密碼就是 ${answer}</strong>`;
+            rangeText.innerText = "Bingo!";
+        } else if (userGuess < answer) {
+            min = userGuess;
+            updateUI("太小了，再試試！");
+        } else {
+            max = userGuess;
+            updateUI("太大了，再試試！");
+        }
+
+        guessInput.value = ''; // 清空輸入框
+        guessInput.focus();    // 自動聚焦回輸入框，方便下次輸入
+    }
+
+    function updateUI(msg) {
+        rangeText.innerText = `${min} ~ ${max}`;
+        message.innerText = msg;
+    }
+
+    function resetGame() {
+        min = 0;
+        max = 100;
+        answer = Math.floor(Math.random() * 101);
+        rangeText.innerText = "0 ~ 100";
+        message.innerText = "遊戲已重設，請開始猜測！";
+        guessInput.value = '';
+    }
+</script>
+
+</body>
+</html>
